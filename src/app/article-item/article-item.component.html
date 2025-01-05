@@ -1,0 +1,17 @@
+<div class="products-container">
+    <div class="article-item" [ngClass]="{ 'on-sale': article.isOnSale }">
+        <h3>{{ article.name }}</h3>
+        <img [src]="article.imageUrl" alt="{{ article.name }}">
+        <p>Price: {{ article.price }} €</p>
+
+        <!-- Botones
+            Añadimos el *ngIf="article.isOnSale" para mostrar los botones de cantidad sólo si está en venta  
+        -->
+        <div class="article-item-quantity" *ngIf="article.isOnSale">
+            <button (click)="decreaseQuantity()" [disabled]="article.quantityInCart <= 0">-</button>
+            <span>{{ article.quantityInCart }}</span>
+            <button (click)="increaseQuantity()">+</button>
+        </div>
+    </div>
+
+</div>

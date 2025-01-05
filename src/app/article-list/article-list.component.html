@@ -1,0 +1,8 @@
+<div class="products-container">
+  <h2>Lista de artículos</h2>
+  <div *ngFor="let article of products; trackBy: trackById">
+    <app-article-item [article]="article" (quantityChange)="onQuantityChange($event)">
+      <!-- Añado el evento quantityChange -->
+    </app-article-item>
+  </div>
+</div>

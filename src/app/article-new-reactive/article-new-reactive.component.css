@@ -1,0 +1,10 @@
+.new-article {
+    width: 70%;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+.error {
+    color: red;
+    font-size: 0.875rem;
+  }

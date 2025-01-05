@@ -1,0 +1,13 @@
+<app-navbar (viewChange)="changeView($event)"></app-navbar> <!-- Añado el evento para cambiar la vista -->
+
+<div *ngIf="currentView === 'articles'"> <!-- Si se pulsa en "Artículos" o "Inicio", se muestra el listado de artículos -->
+    <app-article-list></app-article-list>
+</div>
+
+<div *ngIf="currentView === 'template'"> <!-- Si se pulsa en "Nuevo artículo template", se muestra el formulario para un nuevo artículo con plantilla -->
+    <app-article-new-template></app-article-new-template>
+</div>
+
+<div *ngIf="currentView === 'reactive'"> <!-- Si se pulsa en "Nuevo artículo reactivo", se muestra el formulario para un nuevo artículo reactivo -->
+    <app-article-new-reactive></app-article-new-reactive>
+</div>

@@ -1,0 +1,34 @@
+<div class="new-article">
+    <h1 class="display-1">Introduce un nuevo artículo</h1>
+<form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="name">Nombre:</label>
+        <input id="name" class="form-control" formControlName="name" placeholder="Introduce el nombre del producto" aria-describedby="nameHelp" />
+        <div *ngIf="articleForm.get('name')?.invalid && (articleForm.get('name')?.touched || articleForm.get('name')?.dirty)">
+            <p class="error">Nombre es obligatorio.</p>
+          </div>
+
+    </div>
+
+    <div class="form-group">
+        <label for="price">Precio:</label>
+        <input id="price" type="number" class="form-control" formControlName="price" placeholder="introduce el precio por kilo" />
+        <div *ngIf="articleForm.get('price')?.invalid && (articleForm.get('price')?.touched || articleForm.get('price')?.dirty)">
+            <p class="error">Precio es obligatorio y debe ser numérico.</p>
+          </div>
+    </div>
+    <div class="form-group">
+        <label for="imageUrl">Imagen (URL):</label>
+        <input id="imageUrl" formControlName="imageUrl" class="form-control"/>
+        <div *ngIf="articleForm.get('imageUrl')?.invalid && (articleForm.get('imageUrl')?.touched || articleForm.get('imageUrl')?.dirty)">
+            <p class="error">Debe ser una URL válida.</p>
+          </div>
+    </div>
+    <div class="form-group">
+        <label for="onSale">¿En venta?</label>
+        <input id="onSale" type="checkbox" formControlName="onSale" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar artículo</button>
+</form>
+</div>
