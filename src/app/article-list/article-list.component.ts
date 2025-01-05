@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Article } from '../article-item/article-item.interface';
 import { ArticleItemComponent, ArticleQuantityChange } from '../article-item/article-item.component';
 import { CommonModule } from '@angular/common';
+import { ArticleService } from '../services/article.service';
 
 @Component({
   selector: 'app-article-list',
@@ -11,7 +12,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './article-list.component.css',
 })
 
-export class ArticleListComponent {
+export class ArticleListComponent implements OnInit { //Indicamos que se implementa al iniciarse
   // Lista de productos
   products: Article[] = [
     {
@@ -39,6 +40,13 @@ export class ArticleListComponent {
       quantityInCart: 0,
     }
   ];
+  constructor(private articleService: ArticleService) {} //inyectamos el servicio en el constructor
+
+  ngOnInit(): void { //añadimos el método onInit para que obtenga los datos con el suscriptor getArticles
+    this.articleService.getArticles().subscribe((data) => {
+      this.products = data;
+    })
+  }
 
   trackById(index: number, item: Article): number {
     return item.id; // Usamos 'id' para identificar de forma única cada producto
