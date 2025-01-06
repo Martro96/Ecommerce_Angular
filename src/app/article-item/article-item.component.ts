@@ -26,14 +26,15 @@ export class ArticleItemComponent {
   @Input() article!: Article;
   @Output() quantityChange = new EventEmitter<ArticleQuantityChange>();
 
-  /** Esto debería eliminarse e ir al article-list */
+  
+  ngOnInit() {
+    console.log('Artículo recibido:', this.article);
+  }
+
   increaseQuantity(): void {
     if (this.article) {
       this.quantityChange.emit({ article: this.article, change: 1 });
     }
-  }
-  ngOnInit() {
-    console.log('Artículo recibido:', this.article);
   }
   decreaseQuantity(): void {
     if (this.article && this.article.quantityInCart > 0) {

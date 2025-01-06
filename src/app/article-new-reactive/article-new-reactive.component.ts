@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';  
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { ArticleService } from '../services/article.service';
+import { Observable } from 'rxjs';
+import { Article } from '../article-item/article-item.interface';
+
 
 export function NameArticleValidator(control: AbstractControl): ValidationErrors | null {
   const forbiddenNames = ['Prueba', 'Test', 'Mock', 'Fake'];
@@ -17,8 +20,8 @@ export function NameArticleValidator(control: AbstractControl): ValidationErrors
 })
 
 
-export class ArticleNewReactiveComponent {
-  articleForm: FormGroup;
+export class ArticleNewReactiveComponent  {
+    articleForm: FormGroup;
 
   constructor(private fb: FormBuilder, private articleService: ArticleService) { //Añado articleService al constructor
     this.articleForm = this.fb.group({
@@ -27,19 +30,20 @@ export class ArticleNewReactiveComponent {
       imageUrl: ['', [Validators.required, Validators.pattern(/https?:\/\/[\w.-]+(\.[a-z]{2,3})+/)]],
       onSale: [false],
   })}
-  
-  addArticle():void {
+
+  addArticle():void { 
     if (this.articleForm.valid) {
-      this.articleService.addArticle(this.articleForm.value);
+      const newArticle : Article = this.articleForm.value; //Creamos un nuevo artículo desde el formulario
+      this.articleService.addArticle(newArticle);
       this.articleForm.reset();
-    }
-  }
-  onSubmit() {
-    if (this.articleForm.valid) {
-      console.log('Formulario válido: ', this.articleForm.value);
+      console.log('Artículo añadido correctamente: ', newArticle);
     } else {
       console.log('Formulario inválido');
     }
+  }
+
+  onSubmit(): void { //simplificamos este método llamando al addArticle que ya lleva la lógica
+    this.addArticle();
   }
 
 }

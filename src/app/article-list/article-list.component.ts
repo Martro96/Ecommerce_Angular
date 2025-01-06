@@ -3,16 +3,19 @@ import { Article } from '../article-item/article-item.interface';
 import { ArticleItemComponent, ArticleQuantityChange } from '../article-item/article-item.component';
 import { CommonModule } from '@angular/common';
 import { ArticleService } from '../services/article.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-article-list',
-  standalone: true, 
+  standalone: true,
   imports: [CommonModule, ArticleItemComponent],
-  templateUrl: './article-list.component.html', 
+  templateUrl: './article-list.component.html',
   styleUrl: './article-list.component.css',
 })
 
 export class ArticleListComponent implements OnInit { //Indicamos que se implementa al iniciarse
+  articles$: Observable<Article[]>; // Declaramos articles como observable al poner $ al final. Indicamos con ello que se emetirán listad de artículos
+
   // Lista de productos
   products: Article[] = [
     {
@@ -40,30 +43,30 @@ export class ArticleListComponent implements OnInit { //Indicamos que se impleme
       quantityInCart: 0,
     }
   ];
-  constructor(private articleService: ArticleService) {} //inyectamos el servicio en el constructor
+  
+  //inyectamos el servicio en el constructor
+  constructor(private articleService: ArticleService) {
+    this.articles$ = this.articleService.getArticles();
+  } 
 
-  ngOnInit(): void { //añadimos el método onInit para que obtenga los datos con el suscriptor getArticles
-    this.articleService.getArticles().subscribe((data) => {
-      this.products = data;
-    })
-  }
+  //Se elimina la lógica de los métodos para pasarlas al Servicio, pero se mantienen como llamada al servicio
 
-  deleteArticle(index: number): void {
-    this.articleService.deleteArticle(index);
+  ngOnInit(): void {
+    this.articles$ = this.articleService.getArticles();
+
   }
 
   trackById(index: number, item: Article): number {
-    return item.id; // Usamos 'id' para identificar de forma única cada producto
+    return item.id; // este se mantiene igual
   }
 
-  // Traspaso de la lógica de aumento y reducción de productos a este componente: 
+  deleteArticle(article: Article): void {
+    this.articleService.deleteArticle(article.id);
+  }
+
   onQuantityChange(event: ArticleQuantityChange): void {
-    const { article, change } = event;
-    const index = this.products.findIndex((p) => p.id === article.id);  // Cambié por 'id'
-    if (index !== -1) {
-      this.products[index].quantityInCart += change;
-      console.log(`Cantidad de ${this.products[index].name}: ${this.products[index].quantityInCart}`);
-    }
+    const { article, change } = event; //esta línea la dejamos aqui 
+    this.articleService.onQuantityChange(article.id, change); 
   }
 
 }
