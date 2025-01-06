@@ -8,7 +8,7 @@ import { ArticleService } from '../services/article.service';
   selector: 'app-article-list',
   standalone: true, 
   imports: [CommonModule, ArticleItemComponent],
-  templateUrl: './article-list.component.html', /*Esto según el ejercicio 7 debería estar en un template en línea pero lo he puesto así para entender el error del renderizado*/
+  templateUrl: './article-list.component.html', 
   styleUrl: './article-list.component.css',
 })
 
@@ -46,6 +46,10 @@ export class ArticleListComponent implements OnInit { //Indicamos que se impleme
     this.articleService.getArticles().subscribe((data) => {
       this.products = data;
     })
+  }
+
+  deleteArticle(index: number): void {
+    this.articleService.deleteArticle(index);
   }
 
   trackById(index: number, item: Article): number {

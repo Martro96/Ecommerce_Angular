@@ -1,6 +1,9 @@
 <div class="products-container">
   <h2>Lista de artículos</h2>
-  <div *ngFor="let article of products; trackBy: trackById">
+  <div *ngFor="let article of products; let i = index; trackBy: trackById"> <!-- añadimos let i = index para asignar el índice del elemento actual del bucle a la variable i -->
+    {{ article.name }} - {{ article.price}}€ <!-- Añado plantilla para mostrar los artículos -->
+    <button (click)="deleteArticle(i)">Eliminar</button> 
+
     <app-article-item [article]="article" (quantityChange)="onQuantityChange($event)">
       <!-- Añado el evento quantityChange -->
     </app-article-item>
