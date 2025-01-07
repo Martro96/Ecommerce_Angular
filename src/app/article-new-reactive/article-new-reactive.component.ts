@@ -31,18 +31,25 @@ export class ArticleNewReactiveComponent  {
       onSale: [false],
   })}
 
-  addArticle():void { 
+  addArticle(): void {
     if (this.articleForm.valid) {
-      const newArticle : Article = this.articleForm.value; //Creamos un nuevo artículo desde el formulario
-      this.articleService.addArticle(newArticle);
-      this.articleForm.reset();
+      const newArticle: Article = {
+        ...this.articleForm.value,
+        isOnSale: this.articleForm.value.onSale ?? false, // Valor por defecto en caso de que falte
+        quantityInCart: 0, // nos asegura que inicie siempre en 0
+        id: Date.now(), // Usamos `Date.now()` como ID temporal para no duplicar artículos
+      };
+      this.articleService.create(newArticle);
+      this.articleForm.reset({
+        onSale: false, // Reseteamos con valores por defecto
+      });
       console.log('Artículo añadido correctamente: ', newArticle);
     } else {
       console.log('Formulario inválido');
     }
-  }
+  } 
 
-  onSubmit(): void { //simplificamos este método llamando al addArticle que ya lleva la lógica
+  onSubmit(): void { 
     this.addArticle();
   }
 

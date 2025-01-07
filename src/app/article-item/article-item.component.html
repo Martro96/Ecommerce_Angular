@@ -12,6 +12,12 @@
             <span>{{ article.quantityInCart }}</span>
             <button (click)="increaseQuantity()">+</button>
         </div>
+        
+        <div class="article-item-actions">
+            <!-- Botón para eliminar el artículo -->
+            <button (click)="onDelete()">Eliminar producto del listado</button>
+        </div>
+
     </div>
 
 </div>

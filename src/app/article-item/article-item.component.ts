@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation, ChangeDetectionStrategy, output } from '@angular/core';
 import { Article } from './article-item.interface';
 import { CommonModule } from '@angular/common';
 //import { ArticleListComponent } from '../article-list/article-list.component'; 
@@ -25,8 +25,11 @@ export interface ArticleQuantityChange {
 export class ArticleItemComponent {
   @Input() article!: Article;
   @Output() quantityChange = new EventEmitter<ArticleQuantityChange>();
+  @Output() delete = new EventEmitter<Article>();
 
-  
+  onDelete(): void {
+    this.delete.emit(this.article);
+  }
   ngOnInit() {
     console.log('Artículo recibido:', this.article);
   }

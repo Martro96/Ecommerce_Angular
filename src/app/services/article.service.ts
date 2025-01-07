@@ -1,40 +1,70 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Article } from '../article-item/article-item.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArticleService {
-  private articles: any[] = [];
-  private articlesSubject = new Subject<any[]>(); //Creamos el observable para emitir cambios
+  //Traemos la lista de artículos al Servicio
+  private articlesSubject = new BehaviorSubject<Article[]>([
+    {
+      id: 1,
+      name: 'Zanahoria',
+      imageUrl: 'https://soycomocomo.es/media/2019/03/zanahorias.jpg',
+      price: 1,
+      isOnSale: true,
+      quantityInCart: 5,
+    },
+    {
+      id: 2,
+      name: 'Tomate',
+      imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQj7Sc0I1cZ7uPRrqFqaH7PwZqTaHCp6p49w&s',
+      price: 2,
+      isOnSale: false,
+      quantityInCart: 0,
+    },
+    {
+      id: 3,
+      name: 'Judías blancas',
+      imageUrl: 'https://i.ytimg.com/vi/SOpiQ4ksFdY/maxresdefault.jpg',
+      price: 2,
+      isOnSale: true,
+      quantityInCart: 0,
+    }
+  ])
 
   constructor() { }
-  //Añadimos los métodos para obervar y obtener artículos, añadir, modificar, actualizar y eliminar
+  //Añadimos los métodos para obervar y obtener artículos, añadir, actualizar y eliminar
 
-  getArticles(): Observable<any[]> {
+  getArticles(): Observable<Article[]> {
     return this.articlesSubject.asObservable();
   }
-  addArticle(article:any): void {
-    this.articles.push(article); //usamos push para añadir
-    this.articlesSubject.next(this.articles);
+  create(article: Article): Observable<any> {
+    const currentArticles = this.articlesSubject.value;
+    const updatedArticles = [...currentArticles, article];
+    this.articlesSubject.next(updatedArticles); // quitamos push para no modificar el array original 
+    return new BehaviorSubject(article).asObservable();
   }
-  /**Este método de update de momento no se usa, pero lo dejo por si en un futuro fuera necesario */
-  updateArticle(index:number, updateArticle: any): void {
-    this.articles[index] = updateArticle;
-    this.articlesSubject.next(this.articles);
+ 
+  deleteArticle(articleID: number): void {
+    const currentArticles = this.articlesSubject.value;
+    const updatedArticles = currentArticles.filter((article) => article.id !== articleID) //usamos filter para no modificar el array original 
+    this.articlesSubject.next(updatedArticles);
   }
-  deleteArticle(index: number): void {
-    this.articles.splice(index, 1); //usamos slice para eliminar del array
-    this.articlesSubject.next(this.articles);
-  }
-/** Muevo la lógica del componente al Servicio*/
-  onQuantityChange(articleID: number, changeInQuantity: number): void {
-      const index = this.articles.findIndex((article) => article.id === articleID);  
-      if (index !== -1) {
-        this.articles[index].quantityInCart += changeInQuantity;
-        this.articlesSubject.next(this.articles);
-        console.log(`Cantidad de ${this.articles[index].name}: ${this.articles[index].quantityInCart}`);
-      }
-    }
 
+
+  onQuantityChange(articleID: number, changeInQuantity: number): void {
+    const currentArticles = this.articlesSubject.value;
+    const updatedArticles = currentArticles.map((article) => { //usamos map para crear un nuevo array y modificar sólo el que coincida con el id
+        if (article.id === articleID) {
+          return {
+            ...article,
+            quantityInCart: Math.max(0, article.quantityInCart + changeInQuantity), 
+          };
+        }
+        return article;
+      });
+      this.articlesSubject.next(updatedArticles);
+    }
 }

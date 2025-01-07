@@ -1,11 +1,16 @@
 <div class="products-container">
   <h2>Lista de artículos</h2>
-  <div *ngFor="let article of articles$ | async; trackBy: trackById"> <!-- Para que se suscriba autmáticamente y se vean los datos, usamos de nuevo el observable y el pipe async -->
-    {{ article.name }} - {{ article.price}}€ <!-- Añado plantilla para mostrar los artículos -->
-    <button (click)="deleteArticle(article)">Eliminar</button> 
+  <div *ngFor="let article of articles$ | async; trackBy: trackById"> 
+    <!-- Quito del componente list el botón de eliminar el producto para que pueda estar dentro del card
+     <button (click)="deleteArticle(article)">Eliminar producto</button> 
+     --> 
 
-    <app-article-item [article]="article" (quantityChange)="onQuantityChange($event)">
+    <app-article-item 
+      [article]="article" 
+      (delete)="deleteArticle(article)" 
+      (quantityChange)="onQuantityChange($event)">
       <!-- Añado el evento quantityChange -->
     </app-article-item>
   </div>
 </div>
+ 
