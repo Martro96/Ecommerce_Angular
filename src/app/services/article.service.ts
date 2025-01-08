@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Article } from '../article-item/article-item.interface';
 
@@ -6,7 +7,7 @@ import { Article } from '../article-item/article-item.interface';
   providedIn: 'root'
 })
 export class ArticleService {
-  //Traemos la lista de artículos al Servicio
+  private readonly API_URL = 'http://localhost:3000/api/articles';
   private articlesSubject = new BehaviorSubject<Article[]>([
     {
       id: 1,
@@ -34,26 +35,25 @@ export class ArticleService {
     }
   ])
 
-  constructor() { }
-  //Añadimos los métodos para obervar y obtener artículos, añadir, actualizar y eliminar
+  constructor(private http: HttpClient) { } //aplicamos para hacer peticiones http
 
   getArticles(): Observable<Article[]> {
-    return this.articlesSubject.asObservable();
+    //return this.articlesSubject.asObservable();
+    return this.http.get<Article[]>(this.API_URL); //Cambiamos para que la petición se le haga al servidor 
   }
-  create(article: Article): Observable<any> {
+
+  /*create(article: Article): Observable<any> {
     const currentArticles = this.articlesSubject.value;
     const updatedArticles = [...currentArticles, article];
-    this.articlesSubject.next(updatedArticles); // quitamos push para no modificar el array original 
+    this.articlesSubject.next(updatedArticles); 
     return new BehaviorSubject(article).asObservable();
   }
- 
-  deleteArticle(articleID: number): void {
+    deleteArticle(articleID: number): void {
     const currentArticles = this.articlesSubject.value;
     const updatedArticles = currentArticles.filter((article) => article.id !== articleID) //usamos filter para no modificar el array original 
     this.articlesSubject.next(updatedArticles);
   }
-
-
+    
   onQuantityChange(articleID: number, changeInQuantity: number): void {
     const currentArticles = this.articlesSubject.value;
     const updatedArticles = currentArticles.map((article) => { //usamos map para crear un nuevo array y modificar sólo el que coincida con el id
@@ -66,5 +66,17 @@ export class ArticleService {
         return article;
       });
       this.articlesSubject.next(updatedArticles);
-    }
+    }*/
+  create(article: Article): Observable<Article> {
+    return this.http.post<Article>(this.API_URL, article);
+  }
+
+  deleteArticle(articleID: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${articleID}`);
+  }
+
+  onQuantityChange(articleID: number, changeInQuantity: number): Observable<Article> {
+    return this.http.patch<Article>(`${this.API_URL}/${articleID}`, {changeInQuantity});
+  }
+  
 }
